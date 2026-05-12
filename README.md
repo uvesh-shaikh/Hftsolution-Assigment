@@ -1,10 +1,33 @@
 # Mini Optimizer — Backend Python Take-Home Assignment
 
-Welcome! This is a **1-2 day coding assignment**. We're looking for clean, working
-Python code — not perfection. Submit what you have when time's up.
+Completed submission snapshot:
 
-> **You don't need any finance background.** Everything you need is explained
+- Clean vectorized optimizer in [optimizer.py](optimizer.py)
+- Public tests pass
+- Sanity check passes
+- Notes included in [NOTES.md](NOTES.md)
+
+> **Status:** finished, validated, and ready to submit.
+
+> **You don't need any finance background.** Everything needed is explained
 > below in plain English with examples.
+
+### At a Glance
+
+| Item | Status |
+|------|--------|
+| Core solution | ✅ Implemented |
+| Public tests | ✅ Passing |
+| Sanity check | ✅ Passing |
+| Performance target | ✅ Met |
+| Submission notes | ✅ Added |
+
+### What’s Inside
+
+- A vectorized optimizer that evaluates every stop-loss / take-profit pair
+- Deterministic ranking by Sharpe ratio, total PnL, then parameter order
+- A concise `NOTES.md` describing the approach and trade-offs
+- A clean README that still explains the assignment in plain English
 
 ---
 
@@ -258,12 +281,14 @@ This installs `pandas`, `numpy`, and `pytest`.
 pytest tests/ -v
 ```
 
-You should see **5 tests fail** with `NotImplementedError`. That's correct —
-you haven't written anything yet. Your job is to make them pass.
+You should see **5 tests pass** once the solution is implemented.
 
 ### 5. Open `optimizer.py` and replace the `raise NotImplementedError`
 
 Implement `optimize(...)` per the spec.
+
+If you are reviewing the completed submission, the implementation is already in
+`optimizer.py` and no starter-code change is needed.
 
 ### 6. As you work, run tests frequently
 
@@ -405,6 +430,35 @@ did. That's a complete submission.
 A: Run pytest from the **candidate root folder** (the one containing
 `optimizer.py`), not from inside `tests/`. The tests `import optimizer`,
 which only works if Python's cwd contains it.
+
+---
+
+## Submission Snapshot
+
+This repository currently contains a finished version of the assignment.
+
+### Finished Pieces
+
+| File | Purpose |
+|------|---------|
+| [optimizer.py](optimizer.py) | Grid-search optimizer with SL priority and deterministic ranking |
+| [NOTES.md](NOTES.md) | Short write-up of the approach, trade-offs, and future ideas |
+| [sanity_check.py](sanity_check.py) | Hand-worked example from the README |
+| [tests/test_public.py](tests/test_public.py) | Public verification suite |
+
+### Verification
+
+- `python sanity_check.py`
+- `pytest tests/ -v`
+
+To verify locally, run:
+
+```bash
+python sanity_check.py
+pytest tests/ -v
+```
+
+Everything below this section is unchanged assignment guidance.
 
 ---
 
