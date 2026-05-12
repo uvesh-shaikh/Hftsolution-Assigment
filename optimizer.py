@@ -9,7 +9,19 @@ described in the README.
 
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
+
+
+def _compute_sharpe(adjusted_pnl: np.ndarray) -> float:
+    if adjusted_pnl.size == 0:
+        return 0.0
+
+    std = float(np.std(adjusted_pnl, ddof=0))
+    if std == 0.0:
+        return 0.0
+
+    return float(np.mean(adjusted_pnl)) / std
 
 
 def optimize(
@@ -28,4 +40,43 @@ def optimize(
       - tie-breaking and deterministic ordering rules
       - edge cases you must handle
     """
-    raise NotImplementedError("Implement me.")
+    if trades_df.empty or not stop_losses or not take_profits:
+        return []
+
+    df = trades_df[["pnl", "mae", "mfe"]].dropna()
+    if df.empty:
+        return []
+
+    pnl = df["pnl"].to_numpy()
+    mae = df["mae"].to_numpy()
+    mfe = df["mfe"].to_numpy()
+
+    results: list[dict] = []
+
+    for sl in stop_losses:
+        for tp in take_profits:
+            adjusted_pnl = np.where(
+                mae >= sl,
+                -sl,
+                np.where(
+                    mfe >= tp,
+                    tp,
+                    pnl,
+                )
+            )
+            results.append(
+                {
+                    "stop_loss": float(sl),
+                    "take_profit": float(tp),
+                    "sharpe": _compute_sharpe(adjusted_pnl),
+                    "total_pnl": float(np.sum(adjusted_pnl)),
+                    "stopped_out": int(np.count_nonzero(mae >= sl)),
+                    "took_profit": int(np.count_nonzero((mae < sl) & (mfe >= tp))),
+                }
+            )
+
+    results.sort(
+        key=lambda x: (-x["sharpe"], -x["total_pnl"], x["stop_loss"], x["take_profit"])
+    )
+
+    return results[:top_n]
